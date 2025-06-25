@@ -1,4 +1,4 @@
-package mqTT
+package mqtt
 
 import (
 	"context"
@@ -6,6 +6,7 @@ import (
 	"github.com/eclipse/paho.golang/autopaho"
 	"github.com/eclipse/paho.golang/paho"
 	"net/url"
+	"strconv"
 )
 
 func Connect(ctx context.Context, u *url.URL, topic string, clientId string) (*autopaho.ConnectionManager, error) {
@@ -68,5 +69,13 @@ func onConnect(topic string) func(cm *autopaho.ConnectionManager, connAck *paho.
 			fmt.Printf("failed to subscribe (%s). This is likely to mean no messages will be received.", err)
 		}
 		fmt.Println("mqtt subscription made")
+	}
+}
+
+func CreateMessage(topic string, msgCount int) *paho.Publish {
+	return &paho.Publish{
+		QoS:     1,
+		Topic:   topic,
+		Payload: []byte("TestMessage: " + strconv.Itoa(msgCount)),
 	}
 }

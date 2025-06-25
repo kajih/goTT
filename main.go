@@ -3,13 +3,11 @@ package main
 import (
 	"context"
 	"fmt"
-	"github.com/eclipse/paho.golang/paho"
-	"goTT/mqTT"
-	"goTT/webserve"
+	"goTT/mqtt"
+	"goTT/web"
 	"net/url"
 	"os"
 	"os/signal"
-	"strconv"
 	"syscall"
 	"time"
 )
@@ -28,7 +26,7 @@ func main() {
 		panic(err)
 	}
 
-	conn, err := mqTT.Connect(ctx, brokerUrl, topic, clientId)
+	conn, err := mqtt.Connect(ctx, brokerUrl, topic, clientId)
 	if err != nil {
 		panic(err)
 	}
@@ -42,18 +40,18 @@ func main() {
 	ticker := time.NewTicker(time.Second)
 	defer ticker.Stop()
 
-	webErr := webserve.Serve()
+	r := web.NewRouter()
+	webErr := make(chan error, 1)
+	go func() {
+		webErr <- r.Run("localhost:8080") // will send nil or error
+	}()
 
 	for {
 		select {
 		case <-ticker.C:
 			msgCount++
 			// Publish a test message (use PublishViaQueue if you don't want to wait for a response)
-			if _, err = conn.Publish(ctx, &paho.Publish{
-				QoS:     1,
-				Topic:   topic,
-				Payload: []byte("TestMessage: " + strconv.Itoa(msgCount)),
-			}); err != nil {
+			if _, err = conn.Publish(ctx, mqtt.CreateMessage(topic, msgCount)); err != nil {
 				if ctx.Err() == nil {
 					panic(err) // Publish will exit when context canceled or if something went wrong
 				}
