@@ -9,9 +9,34 @@ import (
 	"strconv"
 )
 
-func Connect(ctx context.Context, u *url.URL, topic string, clientId string) (*autopaho.ConnectionManager, error) {
-	cliCfg := mqttConfig(u, topic, clientId)
-	return autopaho.NewConnection(ctx, cliCfg) // starts a process; will reconnect until context canceled
+type Server struct {
+	Broker string
+	Paho   *autopaho.ConnectionManager
+}
+
+func NewMqTT(ctx context.Context, broker, topic, clientId string) (*Server, error) {
+
+	brokerUrl, err := url.Parse(broker)
+	if err != nil {
+		return nil, err
+	}
+
+	cliCfg := mqttConfig(brokerUrl, topic, clientId)
+	cm, _ := autopaho.NewConnection(ctx, cliCfg)
+
+	/*
+		cm.AddOnPublishReceived(
+			func(pr autopaho.PublishReceived) (bool, error) {
+				fmt.Printf("received (two) message on topic %s; body: %s (retain: %t)\n", pr.Packet.Topic, pr.Packet.Payload, pr.Packet.Retain)
+				return true, nil
+			},
+		)
+	*/
+
+	return &Server{
+		Broker: broker,
+		Paho:   cm,
+	}, nil
 }
 
 func mqttConfig(u *url.URL, topic string, clientId string) autopaho.ClientConfig {
@@ -24,8 +49,6 @@ func mqttConfig(u *url.URL, topic string, clientId string) autopaho.ClientConfig
 		OnConnectError:                errorConnect(),
 		ClientConfig: paho.ClientConfig{
 			ClientID: clientId,
-			// OnPublishReceived is a slice of functions that will be called when a message is received.
-			// You can write the function(s) yourself or use the supplied Router
 			OnPublishReceived: []func(paho.PublishReceived) (bool, error){
 				func(pr paho.PublishReceived) (bool, error) {
 					fmt.Printf("received message on topic %s; body: %s (retain: %t)\n", pr.Packet.Topic, pr.Packet.Payload, pr.Packet.Retain)

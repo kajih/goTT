@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"goTT/mqtt"
 	"goTT/web"
-	"net/url"
 	"os"
 	"os/signal"
 	"syscall"
@@ -21,18 +20,13 @@ func main() {
 	clientId := os.Getenv("MQ_CLIENT_ID")
 	topic := os.Getenv("MQ_TOPIC")
 
-	brokerUrl, err := url.Parse(broker)
-	if err != nil {
-		panic(err)
-	}
-
-	conn, err := mqtt.Connect(ctx, brokerUrl, topic, clientId)
+	conn, err := mqtt.NewMqTT(ctx, broker, topic, clientId)
 	if err != nil {
 		panic(err)
 	}
 
 	// Wait for the connection to come up
-	if err = conn.AwaitConnection(ctx); err != nil {
+	if err = conn.Paho.AwaitConnection(ctx); err != nil {
 		panic(err)
 	}
 
@@ -51,7 +45,7 @@ func main() {
 		case <-ticker.C:
 			msgCount++
 			// Publish a test message (use PublishViaQueue if you don't want to wait for a response)
-			if _, err = conn.Publish(ctx, mqtt.CreateMessage(topic, msgCount)); err != nil {
+			if _, err = conn.Paho.Publish(ctx, mqtt.CreateMessage(topic, msgCount)); err != nil {
 				if ctx.Err() == nil {
 					panic(err) // Publish will exit when context canceled or if something went wrong
 				}
@@ -65,5 +59,5 @@ func main() {
 	}
 
 	fmt.Println("signal caught - exiting")
-	<-conn.Done() // Wait for a clean shutdown (cancelling the context triggered the shutdown)
+	<-conn.Paho.Done() // Wait for a clean shutdown (cancelling the context triggered the shutdown)
 }
