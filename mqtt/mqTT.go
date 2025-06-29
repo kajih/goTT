@@ -3,8 +3,10 @@ package mqtt
 import (
 	"errors"
 	"fmt"
+	mqconst "github.com/eclipse/paho.golang/packets"
 	"github.com/eclipse/paho.golang/paho"
 	"golang.org/x/net/context"
+	"log"
 	"net"
 	"net/url"
 )
@@ -16,14 +18,15 @@ type Server struct {
 	Connection net.Conn
 }
 
-func NewMqTT(ctx context.Context, broker, topic, clientId string) (*Server, error) {
-
-	payload := []byte("Hello, MQTT 5 from Go!")
+func NewMqTT(broker, topic, clientId string) (*Server, error) {
 
 	brokerUrl, err := url.Parse(broker)
-	//conn, err := net.Dial("tcp", broker)
-	conn, err := net.Dial(brokerUrl.Scheme, brokerUrl.Host)
 
+	if err != nil {
+		log.Fatal("Broker URL parse error")
+	}
+
+	conn, err := net.Dial(brokerUrl.Scheme, brokerUrl.Host)
 	if err != nil {
 		fmt.Printf("Failed to connect to broker: %v\n", err)
 		return nil, err
@@ -36,8 +39,7 @@ func NewMqTT(ctx context.Context, broker, topic, clientId string) (*Server, erro
 
 	/* router.SetDefaultHandler(func(m *paho.Publish) {
 		fmt.Printf("Received on %s: %s\n", m.Topic, m.Payload)
-	})
-	*/
+	}) */
 
 	client := paho.NewClient(paho.ClientConfig{
 		Router: router,
@@ -51,14 +53,10 @@ func NewMqTT(ctx context.Context, broker, topic, clientId string) (*Server, erro
 		Connection: conn,
 	}
 
-	_ = server.Connect(ctx)
-	_ = server.Subscribe(ctx, topic)
-	_ = server.Publish(ctx, topic, payload)
-
 	return server, nil
 }
 
-// Disconnect
+// DisConnect
 func (s *Server) DisConnect() {
 	_ = s.Client.Disconnect(&paho.Disconnect{})
 	_ = s.Connection.Close()
@@ -73,7 +71,7 @@ func (s *Server) Connect(ctx context.Context) error {
 		CleanStart: true,
 	})
 
-	if err != nil || connAck.ReasonCode != 0 {
+	if err != nil || connAck.ReasonCode != mqconst.ConnackSuccess {
 		fmt.Printf("Failed to connect (reason %d): %v\n", connAck.ReasonCode, err)
 		return err
 	}
