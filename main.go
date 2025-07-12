@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"goTT/mqtt"
 	"goTT/web"
+	"goTT/web/Sse"
 	"os"
 	"time"
 )
@@ -35,6 +36,9 @@ func main() {
 	go func() {
 		webErr <- r.Run("localhost:8080") // will send nil or error
 	}()
+
+	// Start the Sse change engine
+	go Sse.SimulateStateChanges()
 
 	/*
 		ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
