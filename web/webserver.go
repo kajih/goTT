@@ -1,6 +1,7 @@
 package web
 
 import (
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"goTT/web/hello"
 	"goTT/web/mcu"
@@ -10,6 +11,7 @@ import (
 func NewRouter() *gin.Engine {
 
 	r := gin.Default()
+	r.Use(cors.Default())
 
 	hello.RegisterRoutes(r)
 	mcu.RegisterRoutes(r)
