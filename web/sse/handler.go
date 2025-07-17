@@ -1,4 +1,4 @@
-package Sse
+package sse
 
 import (
 	"fmt"
@@ -25,8 +25,12 @@ var (
 	mutex       sync.Mutex
 )
 
+func RegisterRoutes(r *gin.Engine) {
+	r.GET("/subscribe", handler)
+}
+
 // Handler SSE endpoint using Gin
-func Handler(c *gin.Context) {
+func handler(c *gin.Context) {
 	// Setup headers for SSE
 	c.Writer.Header().Set("Content-Type", "text/event-stream")
 	c.Writer.Header().Set("Cache-Control", "no-cache")

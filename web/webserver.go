@@ -2,17 +2,19 @@ package web
 
 import (
 	"github.com/gin-gonic/gin"
-	"goTT/web/Sse"
 	"goTT/web/hello"
-	"goTT/web/user"
+	"goTT/web/mcu"
+	"goTT/web/sse"
 )
 
 func NewRouter() *gin.Engine {
 
 	r := gin.Default()
-	r.GET("/v0/hello", hello.Handler)
-	r.GET("/v0/user/:name", user.Handler)
-	r.GET("/subscribe", Sse.Handler)
+
+	hello.RegisterRoutes(r)
+	mcu.RegisterRoutes(r)
+	sse.RegisterRoutes(r)
+
 	r.Static("/web", "./web_static")
 
 	// (Optional) fallback for SPA routing

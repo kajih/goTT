@@ -1,0 +1,55 @@
+openapi: 3.0.3
+info:
+  title: Computer Inventory API
+  version: 1.0.0
+  description: API for managing a list of connected computer devices.
+
+paths:
+  /computers:
+    get:
+      summary: Get all computers
+      operationId: getComputers
+      responses:
+        '200':
+          description: List of computers
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Computer'
+
+components:
+  schemas:
+    Computer:
+      type: object
+      required:
+        - id
+        - type
+        - name
+        - ip
+        - uptime
+        - online
+      properties:
+        id:
+          type: integer
+          example: 1
+        type:
+          type: string
+          enum: [pc, mcu, skull]
+          example: pc
+          description: Type of computer or device
+        name:
+          type: string
+          example: Office PC
+        ip:
+          type: string
+          format: ipv4
+          example: 192.168.1.10
+        uptime:
+          type: string
+          example: 3d 2h
+          description: Uptime in human-readable format
+        online:
+          type: boolean
+          example: true
