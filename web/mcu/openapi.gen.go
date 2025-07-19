@@ -17,9 +17,12 @@ import (
 
 // Defines values for ComputerType.
 const (
-	Mcu   ComputerType = "mcu"
-	Pc    ComputerType = "pc"
-	Skull ComputerType = "skull"
+	Chip   ComputerType = "chip"
+	Keyb   ComputerType = "keyb"
+	Mcu    ComputerType = "mcu"
+	Pc     ComputerType = "pc"
+	Server ComputerType = "server"
+	Skull  ComputerType = "skull"
 )
 
 // Computer defines model for Computer.
@@ -42,14 +45,15 @@ type ComputerType string
 // Base64 encoded, gzipped, json marshaled Swagger object
 var swaggerSpec = []string{
 
-	"H4sIAAAAAAAC/2xTwY7bIBD9FTTt0XXsbFW1vq1yqCJVag7tqdoDweNktjBQGEeNovz7Cpx4N8peDIY3",
-	"j8fjzQmMd8EzsiToTpDMHp0u05V3YRSMeR6iDxiFsOxQn7/4X7tgEbq2AjkGhA6IBXcY4VwBhRsMtN+W",
-	"dfvla93WbQMVDD46LbkkHD7DTJAkEu9yPWuHtww/h4EMqs3qPbhnS3xbIHHEGbn13qLmDJ1WTtBjMpGC",
-	"kGfo4NcxoPKDMpdbKx9VjwcyCBUgjw66PxAMVODMCBWkv6O18FS9EVh275SNQci9c+Dvsq6I1X50mj9F",
-	"1L3eWlQXa94yP/Rqub8nP1cQ8d9IEfusjvor5GJfeYVZwWzS00zkt89oBM6ZiXjw9yofN+ssSDnNeke8",
-	"U1pZSjI5xYxGsH/1bDIs1VkHSZF+TZFa8wFZfDyqx80aKjhgTNMZbd3UTXnEgKwD5QvXTf0AFQQt+xK5",
-	"xfWM8rdDyUPOpM5C1z108B1lNYOyMyl4TlNil02TB+NZkEutDsGSKdWL55R1XMNfEi7oSuHHiAN08GHx",
-	"2iaLS48s5gaZQwU6Rn2c/Lz18cds2lVhxqTROR2Pk3ilrb3ZP59fAgAA//83lGhgngMAAA==",
+	"H4sIAAAAAAAC/2yTwY7bIBCGXwVNe6SOna2q1rdVDlWkSs2hPVV7IHiczC4MFHBUK8q7V+DEu1b2YjDM",
+	"P3z8zJxBO+sdI6cI7RmiPqJVZbpx1g8JQ5774DyGRFh2qMtf/KesNwhtIyGNHqEF4oQHDHCRQH4RA823",
+	"ddV8+Vo1VVODhN4Fq1KW+NNnmBPEFIgPWc/K4jLDz74njWK3eS/csSFeClIYcI7cO2dQcQ6dVs7QYdSB",
+	"fCLH0MKv0aNwvdDXWwsXRIcn0ggSkAcL7R/wGiToI3mQYPUAEl5w3IOEiOGEIU9eBmPgSb7hLqI74MEn",
+	"su9w/C7rglgcB6v4U0DVqb1BcXXsbeaHTqyP98kvEgL+HShgl6Gpu4VcXS2PMxPM3j3Nidz+GXWCS85E",
+	"3Lt7ysfdNgMJq1gdiA9CCUMxTQYyo07YvVo5+RirzEGpoN+KS2z5hJxcGMXjbgsSThjidEZT1VVd3tYj",
+	"K0/5wlVdPYAEr9KxVOLqdkb5O2DKQy5VlUG3HbTwHdNmDsrORO84ToW8rus8aMcJuWiV94Z0Ua+eY+a4",
+	"9UQp/IS2CD8G7KGFD6vX7lldW2c1981ca6BCUOPk59LHH7NpN8IcEwdrVRgneKGMWexfLv8DAAD//6Yl",
+	"pm+1AwAA",
 }
 
 // GetSwagger returns the content of the embedded swagger specification file

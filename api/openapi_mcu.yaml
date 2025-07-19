@@ -36,7 +36,7 @@ components:
           example: 1
         type:
           type: string
-          enum: [pc, mcu, skull]
+          enum: [pc, chip, mcu, keyb, server, skull]
           example: pc
           description: Type of computer or device
         name:
