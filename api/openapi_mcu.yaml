@@ -7,6 +7,8 @@ info:
 paths:
   /computers:
     get:
+      tags:
+        - Mcu
       summary: Get all computers
       operationId: getComputers
       responses:
